@@ -1,0 +1,22 @@
+<!-- necessary part of flask application is layout.html 
+which controls the general structure of the web page. Within the body tags
+you have Flask specific blocks with percents - a template language called JINJA
+that Flask used in its code - to have actual html. You also need to link
+this page to the index page in order for it to work across your routes. The web page
+has no idea about Python or Flask, it only recognises the html, but Python and Flask
+allow us to construct that page dynamically -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP shit</title>
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>
