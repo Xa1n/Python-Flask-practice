@@ -25,11 +25,19 @@ def registrants():
 
 @app.route("/register", methods=["POST"])                   #must define register route in controller, and ensure it is a post method
 def register():
-    name = request.form.get("name")                         #getting data from user's form input (as opposed to arguments - because Flask puts get arguments in args and post arguments in forms) and storing in variables
+    name = request.form.get("name")   
+    email = request.form.get("email")                  #getting data from user's form input (as opposed to arguments - because Flask puts get arguments in args and post arguments in forms) and storing in variables
     house = request.form.get("houses")                   
-    if not name or not house:                             #then using variables to control for condition where data might not be given before submitting form
+    if not name or not email or not house:                             #then using variables to control for condition where data might not be given before submitting form
         return render_template("failure.html")
     students.append(f"{name} from {house}")            # f strings in python
-    return redirect("/registrants")                  
+    
+    message = "You are registered"
+    server = smtplib.SMTP("smtp@gmail.com", 587)        # tell library what server to use for sending an email, and use gmail library's email to do it
+    server.starttls()                                   # says turn on encryption between you and email
+    server.login(EMAIL HERE, os.getenv("PASSWORD"))     # define address for email to be sent to
+    server.sendmail(EMAIL HERE, email, message)
+    return render_template("registered.html")
+
 
 
