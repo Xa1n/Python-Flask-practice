@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request
+import os
+import smtplib                                              # simple (e)mail transfer protocol
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)       # command needed at the top of every Flask application - means turn this file into a web application
 
@@ -17,6 +19,10 @@ students = []           # basic way to store info before incorporating database
 def index():
     return render_template("index.html")
 
+@app.route("/registrants")
+def registrants():
+    return render_template("registered.html", students=students)
+
 @app.route("/register", methods=["POST"])                   #must define register route in controller, and ensure it is a post method
 def register():
     name = request.form.get("name")                         #getting data from user's form input (as opposed to arguments - because Flask puts get arguments in args and post arguments in forms) and storing in variables
@@ -24,6 +30,6 @@ def register():
     if not name or not house:                             #then using variables to control for condition where data might not be given before submitting form
         return render_template("failure.html")
     students.append(f"{name} from {house}")            # f strings in python
-    return render_template("success.html")                    #now you make a success.html file
+    return redirect("/registrants")                  
 
 
