@@ -1,6 +1,7 @@
 import os
 import smtplib                                              # simple (e)mail transfer protocol
 from flask import Flask, render_template, request, redirect
+import csv                              # Comma Separated Value - lightweight database that saves info as a file to my hdd permanently so the data persists
 
 app = Flask(__name__)       # command needed at the top of every Flask application - means turn this file into a web application
 
@@ -13,31 +14,27 @@ app = Flask(__name__)       # command needed at the top of every Flask applicati
 #                        
 #                                              # the key 'name' corresponds to the {{ name }} in the index file - if you change 'name' to 'foo', you have to change it in index too
 
-students = []           # basic way to store info before incorporating database
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/registrants")
-def registrants():
-    return render_template("registered.html", students=students)
-
 @app.route("/register", methods=["POST"])                   #must define register route in controller, and ensure it is a post method
 def register():
-    name = request.form.get("name")   
-    email = request.form.get("email")                  #getting data from user's form input (as opposed to arguments - because Flask puts get arguments in args and post arguments in forms) and storing in variables
-    house = request.form.get("houses")                   
-    if not name or not email or not house:                             #then using variables to control for condition where data might not be given before submitting form
+    if not request.form.get("name") or not request.form.get("house"):       # no need for lengthy lines of variables (name = or house = etc.) now, define functions directly
         return render_template("failure.html")
-    students.append(f"{name} from {house}")            # f strings in python
-    
-    message = "You are registered"
-    server = smtplib.SMTP("smtp@gmail.com", 587)        # tell library what server to use for sending an email, and use gmail library's email to do it
-    server.starttls()                                   # says turn on encryption between you and email
-    server.login(EMAIL HERE, os.getenv("PASSWORD"))     # define address for email to be sent to
-    server.sendmail(EMAIL HERE, email, message)
+    file = open("registered.csv", "a")                              #a = append - means add a row to the file, so every registration has a new line added
+    writer = csv.writer(file)                                   #using 'import csv', you can use a writer to write out ie create files in "(file)" defined on above line
+    writer.writerow((request.form.get("name"), request.form.get("house")))          #writerow does what it says - gives you rows/columns using the provided args (technically tuples, hence second set of parentheses) separated by commas
+    file.close
     return render_template("registered.html")
+
+@app.route("/registered")
+def registered():
+    file = open("registered.csv", "r")              # r = read mode
+    reader = csv.reader(file)
+    students = list(reader)                         # tells python to turn reader into a list
+    return render_template("registered.html", students=students)
 
 
 
