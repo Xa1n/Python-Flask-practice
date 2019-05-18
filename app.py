@@ -14,6 +14,7 @@ app = Flask(__name__)       # command needed at the top of every Flask applicati
 #                        
 #                                              # the key 'name' corresponds to the {{ name }} in the index file - if you change 'name' to 'foo', you have to change it in index too
 
+students = []
 
 @app.route("/")
 def index():
@@ -31,9 +32,9 @@ def register():
 
 @app.route("/registered")
 def registered():
-    file = open("registered.csv", "r")              # r = read mode
-    reader = csv.reader(file)
-    students = list(reader)                         # tells python to turn reader into a list
+    with open("registered.csv", "r") as file:              # r = read mode / 'with' python syntax makes this easier and doesn't require 'closing' the file explicitly
+        reader = csv.reader(file)
+        students = list(reader)                         # tells python to turn reader into a list
     return render_template("registered.html", students=students)
 
 

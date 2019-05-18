@@ -26,7 +26,7 @@
     <form action="/register" method="post">
         <input name="name" placeholder="Name" type="text">
         <input name="email" placeholder="Email" type="text">
-        <select name="houses">
+        <select name="house">
             <option disabled selected value=>Houses</option>
             <option value="Gryffindor">Gryffindor</option>
             <option value="Hufflepuff">Hufflepuff</option>
@@ -35,6 +35,24 @@
         </select>
         <input type ="submit" value="Register">
     </form>
+
 </body>
+
+<script>
+
+    document.querySelector('form').onsubmit = function() {
+        if (!document.querySelector('input').value) {
+            alert("You must provide your name");
+            return false;
+        } 
+        else if (!document.querySelector('select').value) {
+            alert("You must provide your house!")
+            return false;
+        }
+        return true
+    };
+
+
+</script>
 </html>
 {% endblock %}
