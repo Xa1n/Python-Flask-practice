@@ -14,13 +14,13 @@ app = Flask(__name__)       # command needed at the top of every Flask applicati
 #                        
 #                                              # the key 'name' corresponds to the {{ name }} in the index file - if you change 'name' to 'foo', you have to change it in index too
 
-students = []
 
-@app.route("/")
+
+@app.route("/")                                 
 def index():
     return render_template("index.html")
 
-@app.route("/register", methods=["POST"])                   #must define register route in controller, and ensure it is a post method
+@app.route("/register", methods=["POST"])                   #must define register route in controller, and ensure it is a post method - get method by default
 def register():
     if not request.form.get("name") or not request.form.get("house"):       # no need for lengthy lines of variables (name = or house = etc.) now, define functions directly
         return render_template("failure.html")
@@ -28,7 +28,7 @@ def register():
     writer = csv.writer(file)                                   #using 'import csv', you can use a writer to write out ie create files in "(file)" defined on above line
     writer.writerow((request.form.get("name"), request.form.get("house")))          #writerow does what it says - gives you rows/columns using the provided args (technically tuples, hence second set of parentheses) separated by commas
     file.close
-    return render_template("registered.html")
+    return redirect("/registered")
 
 @app.route("/registered")
 def registered():
